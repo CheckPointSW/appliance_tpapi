@@ -16,7 +16,7 @@ MAX_RETRIES = 120
 
 def parse_verdict(response, feature):
     """
-    Parsing the verdict of handled feature results response, in case the that feature response status is FOUND.
+    Parsing the verdict of handled feature results response, in case that feature response status is FOUND.
     :param response: the handled response
     :param feature: either "te" or "te_eb"
     """
@@ -28,7 +28,7 @@ def parse_verdict(response, feature):
 class TE(object):
     """
     This class gets a file as input. The methods will query TE cache for already existing results of the file sha1,
-     and in case not then upload the file to TED, query until an answer with TE results is received,
+     and in case no results, then upload the file to TED, query until an answer with TE results is received,
      and parse the last response.
      In addition, if file is malicious then might receive te_eb early verdict and anyway downloading the TE report.
     """
