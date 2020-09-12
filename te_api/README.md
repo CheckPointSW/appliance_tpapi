@@ -1,4 +1,4 @@
-## te_api
+# te_api
 A Python client side utility for using Threat Emulation API calls to an appliance.
 
 It includes Upload, Query and Download API calls, using the Cloud API format ( …/tecloud/api/v#/file/..).
@@ -20,7 +20,7 @@ For each file:
 
 
 
-### Usage:
+### Usage
 ~~~~
 python te_api.py --help
 
@@ -37,3 +37,4 @@ optional arguments:
                         the appliance ip address
 
 ~~~~
+It is also possible to change the optional arguments default values within te_api.py
