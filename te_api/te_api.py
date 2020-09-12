@@ -1,3 +1,9 @@
+"""
+te_api
+    A Python client side utility for using Threat Emulation API calls to an appliance.
+
+"""
+
 from te_file_handler import TE
 import os
 import argparse
