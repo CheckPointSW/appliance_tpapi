@@ -17,6 +17,7 @@ appliance_ip = "NNN.NNN.NNN.NNN"
 
 
 def main():
+    # Arguments handling
     global input_directory
     global output_directory
     global appliance_ip
@@ -45,6 +46,7 @@ def main():
         appliance_ip = args.appliance_ip
     print("The appliance ip address : {}".format(appliance_ip))
     url = "https://" + appliance_ip + ":18194/tecloud/api/v1/file/"
+    # A loop over the files in the input folder
     print("Handle input files")
     for file_name in os.listdir(input_directory):
         try:
