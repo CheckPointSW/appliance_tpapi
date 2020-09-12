@@ -2,8 +2,8 @@
 te_api
     A Python client side utility for using Threat Emulation API calls to an appliance.
     
-    You may either set the global variables below (some or all), or assigning their arguments
-     when running the utility.  Run  te_api --help  for the arguemnts details.
+     You may either set the global variables below (some or all), or assigning their optional
+      arguments when running the utility.  Run  te_api --help  for the arguments details.
 """
 
 from te_file_handler import TE
