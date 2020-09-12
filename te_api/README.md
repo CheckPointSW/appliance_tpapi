@@ -1,6 +1,5 @@
 ## te_api
 A Python client side utility for using Threat Emulation API calls to an appliance.
-
 It includes Upload, Query and Download API calls, using the Cloud API format ( …/tecloud/api/v#/file/..).
 
 ### The flow
