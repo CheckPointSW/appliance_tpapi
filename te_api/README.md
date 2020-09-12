@@ -10,7 +10,8 @@ For each file:
 
     1. Uploading the file to the appliance for te and te_eb features.
     
-    2. If upload result is upload_success then querying te and te_eb until receiving te results.  (Note, te_eb results of early malicious verdict might be received earlier)
+    2. If upload result is upload_success then querying te and te_eb until receiving te results.
+       (Note, te_eb results of early malicious verdict might be received earlier)
     
     3. Writing to output file the last query/upload response info.
     
