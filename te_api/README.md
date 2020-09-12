@@ -42,6 +42,6 @@ optional arguments:
 It is also possible to change the optional arguments default values within te_api.py
 
 ### Additional comments
-* In order to make sure of getting all additional Threat Emulation API info (error results if any and engine version) follow the appliance TECLI configuration described in sk167161
-* te_eb feature may respond of early malicious verdict before getting the te results respond.  te_eb feature is described in sk117168 chapter 4
+* In order to make sure of getting all additional Threat Emulation API info (error results if any and engine version) follow the appliance TECLI configuration described in [sk167161](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk167161)
+* te_eb feature may respond of early malicious verdict before getting the te results respond.  te_eb feature is described in [sk117168 chapter 4](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk117168#New%20Public%20API%20Interface)
 
