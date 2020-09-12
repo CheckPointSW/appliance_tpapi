@@ -2,10 +2,10 @@ import json
 import requests
 import base64
 import os
+import hashlib
 import time
 import tarfile
 import copy
-
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -16,7 +16,7 @@ MAX_RETRIES = 120
 
 def parse_verdict(response, feature):
     """
-    Parsing the verdict of handled feature results response, in case that feature response status is FOUND.
+    Parsing the verdict of handled feature results response, in case the that feature response status is FOUND.
     :param response: the handled response
     :param feature: either "te" or "te_eb"
     """
@@ -28,7 +28,7 @@ def parse_verdict(response, feature):
 class TE(object):
     """
     This class gets a file as input. The methods will query TE cache for already existing results of the file sha1,
-     and in case no results, then upload the file to TED, query until an answer with TE results is received,
+     and in case not then upload the file to TED, query until an answer with TE results is received,
      and parse the last response.
      In addition, if file is malicious then might receive te_eb early verdict and anyway downloading the TE report.
     """
@@ -53,6 +53,19 @@ class TE(object):
         self.final_status_label = ""
         self.report_id = ""
 
+    def set_file_sha1(self):
+        """
+        :return the file's sha1
+        """
+        sha1 = hashlib.sha1()
+        with open(self.file_path, 'rb') as f:
+            while True:
+                block = f.read(2 ** 10)  # One-megabyte blocks
+                if not block:
+                    break
+                sha1.update(block)
+            self.sha1 = sha1.hexdigest()
+
     def parse_report_id(self, response):
         """
         parse and return the summary report id
@@ -72,6 +85,20 @@ class TE(object):
         output_path += ".response.txt"
         with open(output_path, 'w') as file:
             file.write(json.dumps(response))
+
+    def check_te_cache(self):
+        """
+        Query (for te) the file (before upload) in order to find whether file results already exist in TE cache.
+        :return the query response
+        """
+        self.set_file_sha1()
+        request = copy.deepcopy(self.request_template)
+        request['request'][0]['sha1'] = self.sha1
+        data = json.dumps(request)
+        print("Sending TE Query request before upload in order to check TE cache")
+        response = requests.post(url=self.url + "query", data=data, verify=False)
+        response_j = response.json()
+        return response_j
 
     def upload_file(self):
         """
@@ -169,26 +196,35 @@ class TE(object):
 
     def handle_file(self):
         """
-        1. Upload the file to the appliance for te and te_eb.
-        2. If upload result is upload_success then query te and te_eb until receiving te results.  (Note, te_eb results
+        1. Query TE cache for already existing results of the file sha1.
+            If results exist then goto #4, otherwise- continue to #2
+        2. Upload the file to the appliance for te and te_eb.
+        3. If upload result is upload_success then query te and te_eb until receiving te results.  (Note, te_eb results
                of early malicious verdict might be received earlier).
-        3. Write to file last query/upload response info.
-        4. If te result is found then print the verdict.  If verdict is malicious then also download the TE report.
+        4. Write to file last query/upload response info.
+        5. If te result is found then print the verdict.  If verdict is malicious then also download the TE report.
         """
-        upload_response = self.upload_file()
-        upload_status_label = upload_response["response"][0]["status"]["label"]
-        if upload_status_label == "UPLOAD_SUCCESS":
-            self.sha1 = upload_response["response"][0]["sha1"]
-            print("sha1: {}".format(self.sha1))
-            query_response = self.query_file()
-            query_status_label = query_response["response"][0]["status"]["label"]
-            print("Receiving Query response with te results. status: {}".format(query_status_label))
-            self.final_response = query_response
-            self.final_status_label = query_status_label
+        query_cache_response = self.check_te_cache()
+        cache_status_label = query_cache_response['response'][0]['status']['label']
+        if cache_status_label == "FOUND":
+            print("Results already exist in TE cache")
+            self.final_response = query_cache_response
+            self.final_status_label = cache_status_label
         else:
-            print("File was not uploaded.  Upload status: {}".format(upload_status_label))
-            self.final_response = upload_response
-            self.final_status_label = upload_status_label
+            print("No results in TE cache before upload")
+            upload_response = self.upload_file()
+            upload_status_label = upload_response["response"][0]["status"]["label"]
+            if upload_status_label == "UPLOAD_SUCCESS":
+                self.sha1 = upload_response["response"][0]["sha1"]
+                print("sha1: {}".format(self.sha1))
+                query_response = self.query_file()
+                query_status_label = query_response["response"][0]["status"]["label"]
+                print("Receiving Query response with te results. status: {}".format(query_status_label))
+                self.final_response = query_response
+                self.final_status_label = query_status_label
+            else:
+                self.final_response = upload_response
+                self.final_status_label = upload_status_label
         self.create_response_info(self.final_response)
         if self.final_status_label == "FOUND":
             verdict = parse_verdict(self.final_response, "te")
