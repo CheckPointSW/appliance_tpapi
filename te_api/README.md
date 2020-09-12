@@ -5,11 +5,18 @@ It includes Upload, Query and Download API calls, using the Cloud API format ( â
 
 ### The flow
 Going through the input directory and handling each file in order to get its Threat Emulation results.
+
 For each file:
+
     1. Uploading the file to the appliance for te and te_eb features.
+    
     2. If upload result is upload_success then querying te and te_eb until receiving te results.  (Note, te_eb results of early malicious verdict might be received earlier)
+    
     3. Writing to output file the last query/upload response info.
+    
     4. If te result is found then display the verdict.  If verdict is malicious then also download the TE report.
+    
+    
 
 
 
