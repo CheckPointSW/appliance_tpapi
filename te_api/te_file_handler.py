@@ -55,7 +55,7 @@ class TE(object):
 
     def set_file_sha1(self):
         """
-        :return the file's sha1
+        Calculates the file's sha1
         """
         sha1 = hashlib.sha1()
         with open(self.file_path, 'rb') as f:
