@@ -95,6 +95,7 @@ class TE(object):
         request = copy.deepcopy(self.request_template)
         request['request'][0]['features'].remove('te_eb')
         request['request'][0]['sha1'] = self.sha1
+        print("file sha1: {}".format(self.sha1))
         data = json.dumps(request)
         print("Sending TE Query request before upload in order to check TE cache")
         response = requests.post(url=self.url + "query", data=data, verify=False)
@@ -199,7 +200,7 @@ class TE(object):
         """
         1. Query TE cache for already existing results of the file sha1.
             If results exist then goto #4, otherwise- continue to #2
-        2. Upload the file to the appliance for te and te_eb.
+        2. Upload the file to the appliance for te and te_eb features.
         3. If upload result is upload_success then query te and te_eb until receiving te results.  (Note, te_eb results
                of early malicious verdict might be received earlier).
         4. Write to file last query/upload response info.
@@ -216,8 +217,6 @@ class TE(object):
             upload_response = self.upload_file()
             upload_status_label = upload_response["response"][0]["status"]["label"]
             if upload_status_label == "UPLOAD_SUCCESS":
-                self.sha1 = upload_response["response"][0]["sha1"]
-                print("sha1: {}".format(self.sha1))
                 query_response = self.query_file()
                 query_status_label = query_response["response"][0]["status"]["label"]
                 print("Receiving Query response with te results. status: {}".format(query_status_label))
