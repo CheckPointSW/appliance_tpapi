@@ -172,10 +172,8 @@ class TE(object):
         1. Upload the file to the appliance for te and te_eb.
         2. If upload result is upload_success then query te and te_eb until receiving te results.  (Note, te_eb results
                of early malicious verdict might be received earlier).
-           Otherwise, if upload result is already found then continue.
-           Otherwise, exit.
-        3. Prepare (last query/upload) response info of TE results.
-        4. If result verdict is malicious then also download the TE report.
+        3. Write to file last query/upload response info.
+        4. If te result is found then print the verdict.  If verdict is malicious then also download the TE report.
         """
         upload_response = self.upload_file()
         upload_status_label = upload_response["response"][0]["status"]["label"]
