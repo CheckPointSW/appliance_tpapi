@@ -93,6 +93,7 @@ class TE(object):
         """
         self.set_file_sha1()
         request = copy.deepcopy(self.request_template)
+        request['request'][0]['features'].remove('te_eb')
         request['request'][0]['sha1'] = self.sha1
         data = json.dumps(request)
         print("Sending TE Query request before upload in order to check TE cache")
