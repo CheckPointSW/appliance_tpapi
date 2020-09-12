@@ -8,15 +8,19 @@ Going through the input directory and handling each file in order to get its Thr
 
 For each file:
 
-> 1. Uploading the file to the appliance for te and te_eb features.
+> 1. Querying te cache for already existing results of the file sha1.
+
+>>> If results exist then goto #4, otherwise- continue to #2
     
-> 2. If upload result is upload_success then querying te and te_eb until receiving te results.
+> 2. Uploading the file to the appliance for te and te_eb features.
+    
+> 3. If upload result is upload_success then querying te and te_eb until receiving te results.
 
 >>> (Note, te_eb results of early malicious verdict might be received earlier during the queries in between)
     
-> 3. Writing to output file the last query/upload response info.
+> 4. Writing to output file the last query/upload response info.
     
-> 4. If te result is found then display the verdict.  If verdict is malicious then also download the TE report.
+> 5. If te result is found then display the verdict.  If verdict is malicious then also download the TE report.
     
     
 
