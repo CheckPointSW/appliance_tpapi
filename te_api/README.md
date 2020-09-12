@@ -20,7 +20,7 @@ For each file:
     
 > 4. Writing to output file the last query/upload response info.
     
-> 5. If te result is found then display the verdict.  If verdict is malicious then also download the TE report.
+> 5. If te result is found then displaying the verdict.  If verdict is malicious then also downloading the TE report.
 
 ### Usage
 ~~~~
