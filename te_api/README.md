@@ -21,10 +21,6 @@ For each file:
 > 4. Writing to output file the last query/upload response info.
     
 > 5. If te result is found then display the verdict.  If verdict is malicious then also download the TE report.
-    
-    
-
-
 
 ### Usage
 ~~~~
@@ -44,3 +40,8 @@ optional arguments:
 
 ~~~~
 It is also possible to change the optional arguments default values within te_api.py
+
+### Additional comments
+* In order to make sure of getting all additional Threat Emulation API info (error results if any and engine version) follow the appliance TECLI configuration described in sk167161
+* te_eb feature may respond of early malicious verdict before getting the te results respond.  te_eb feature is described in sk117168 chapter 4
+
