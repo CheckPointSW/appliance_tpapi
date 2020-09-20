@@ -17,6 +17,12 @@ appliance_ip = "NNN.NNN.NNN.NNN"
 
 
 def main():
+    """
+    1. Get the optional arguments (if any): the input-directory, the output-root-directory and appliance-ip.
+    2. Accordingly set the api-url, and create the output directory.
+    3. Go though all input files in the input directory.
+        Handling each input file is described in AV class in av_file_handler.py:
+    """
     global input_directory
     global output_directory
     global appliance_ip
@@ -40,14 +46,14 @@ def main():
             os.mkdir(output_directory)
         except Exception as E1:
             print("could not create av_api output directory, because: {}".format(E1))
-            raise
+            return
     if args.appliance_ip:
         appliance_ip = args.appliance_ip
     print("The appliance ip address : {}".format(appliance_ip))
     url = "https://" + appliance_ip + ":18194/tecloud/api/v1/file/"
 
     # A loop over the files in the input folder
-    print("Handle input files")
+    print("Begin handling input files by AV")
     for file_name in os.listdir(input_directory):
         try:
             full_path = os.path.join(input_directory, file_name)
@@ -55,7 +61,7 @@ def main():
             av = AV(url, file_name, full_path, output_directory)
             av.handle_file()
         except Exception as E:
-            print("could not handle file: {} because: {}. will continue".format(file_name, E))
+            print("could not handle file: {} because: {}. Continue to handle next file.".format(file_name, E))
             continue
 
 
