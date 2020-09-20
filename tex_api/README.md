@@ -1,7 +1,7 @@
 # tex_api
 A Python client side utility for using Threat Extraction API calls to an appliance.
 
-It includes Upload API calls, using the User-Check API format ( …//UserCheck/TPAPI).
+It includes Upload API calls, using the User-Check API format ( …/UserCheck/TPAPI).
 
 ### The flow
 Going through the input directory and handling each file in order to get its Threat Extraction results.
