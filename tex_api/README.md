@@ -36,6 +36,6 @@ optional arguments:
 ~~~~
 It is also possible to change the optional arguments default values within tex_api.py
 
-### Additional comments
+### References
 * For more details about required appliance side configurations refer to [sk113599](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk113599)
 * For more details about scrub (TEX) API to appliance refer to [sk137032](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk137032&partition=General&product=Threat)
