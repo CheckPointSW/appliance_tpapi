@@ -8,7 +8,7 @@ Going through the input directory and handling each file in order to get its Thr
 
 For each file:
 
-> 1. Querying te cache for already existing results of the file sha1.
+> 1. Querying te cache for already existing results by the file sha1.
 
 >>> If results exist then goto #4, otherwise- continue to #2
     
