@@ -8,7 +8,7 @@ Going through the input directory and handling each file in order to get its Ant
 
 For each file:
 
-> 1. Querying av cache for already existing results of the file md5.
+> 1. Querying av cache for already existing results by the file md5.
 
 >>> If results exist then goto #4, otherwise- continue to #2
     
