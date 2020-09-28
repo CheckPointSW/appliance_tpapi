@@ -8,17 +8,17 @@ Going through the input directory and handling each file in order to get its Ant
 
 For each file:
 
-> 1. Querying av cache for already existing results by the file md5.
+      1. Querying av cache for already existing results by the file md5.
 
->>> If results exist then goto #4, otherwise- continue to #2
+           If results exist then goto #4, otherwise- continue to #2
     
-> 2. Uploading the file to the appliance for av feature.
+      2. Uploading the file to the appliance for av feature.
     
-> 3. If upload result is upload_success then querying av until receiving results.
+      3. If upload result is upload_success then querying av until receiving results.
 
-> 4. Writing to output file the last query/upload response info.
+      4. Writing to output file - the last query/upload response info.
     
-> 5. If av result is found malicious then displaying the resulted av signature.
+      5. If av result is found malicious then displaying the resulted av signature.
 
 ### Usage
 ~~~~
