@@ -2,8 +2,9 @@
 Python client side utilities for using Check Point Threat Prevention API calls to an appliance.
 
 ## Content
-`te_api` - **ALL IN !** Threat Emulation API, Threat Extraction API and Anti Virus API calls to an appliance.
->>> For more details and usage refer to tp_api/README.md
+`tp_api` - **ALL IN !** Threat Emulation API, Threat Extraction API and Anti Virus API calls to an appliance.
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For more details and usage refer to tp_api/README.md
 
 `te_api` - **Threat Emulation** API calls to an appliance.   For more details and usage refer to te_api/README.md
 
