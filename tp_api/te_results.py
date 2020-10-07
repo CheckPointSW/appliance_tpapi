@@ -4,8 +4,27 @@ import requests
 import base64
 import os
 import tarfile
+import copy
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+def create_single_feature_response(response, feature_one, feature_two):
+    """
+    Getting a triple (at most) features response and create a response including the info of only one of these features.
+    :param response: the outer te part response (that has triple features, at most)
+    :param feature_one: the first feature to remove (if exists)
+    :param feature_two: the second feature to remove (if exists)
+    :return the resulted single feature response
+    """
+    single_feature_info = copy.deepcopy(response)
+    del single_feature_info["features"]
+    del single_feature_info["status"]
+    if not (single_feature_info.get(feature_one) is None):
+        del single_feature_info[feature_one]
+    if not (single_feature_info.get(feature_two) is None):
+        del single_feature_info[feature_two]
+    return single_feature_info
 
 
 class TeResults(object):
@@ -76,17 +95,18 @@ class TeResults(object):
             self.log_print("Downloading TE report failed: {} ".format(E))
             raise
 
-    def create_response_info(self, response):
+    def create_response_info(self, outer_te_response):
         """
         Create the TE response info of handled file and write it into te_response_info/ sub-folder
-        :param response: the te feature part in handled file last response
+        :param outer_te_response: the outer te part within handled file last response
         """
         try:
-            self.log("TE response with results : {}".format(response))
+            te_response_info = create_single_feature_response(outer_te_response, "av", "te_eb")
+            self.log("TE response with results : {}".format(te_response_info))
             output_path = os.path.join(self.output_folder_te_response_info, self.file_name)
             output_path += ".response.txt"
             with open(output_path, 'w') as file:
-                file.write(json.dumps(response))
+                file.write(json.dumps(te_response_info))
         except Exception as E:
             self.log_print("Create te response info failed: {} ".format(E))
             raise
@@ -103,8 +123,8 @@ class TeResults(object):
         :param outer_te_response: the outer te part within handled file last response
         """
         try:
+            self.create_response_info(outer_te_response)
             inner_te_response = outer_te_response["te"]
-            self.create_response_info(inner_te_response)
             te_has_found_status = False  # default init
             combined_status_label = outer_te_response["status"]["label"]
             if combined_status_label == "FOUND":
