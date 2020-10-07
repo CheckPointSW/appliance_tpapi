@@ -1,7 +1,6 @@
 """
 av_api
     A Python client side utility for using Anti Virus API calls to an appliance.
-
     You may either set the global variables below (some or all), or assigning their optional
       arguments when running the utility.  Run  av_api --help  for the arguments details.
 """
@@ -11,9 +10,15 @@ import os
 import argparse
 
 
-input_directory = "/home/admin/AV_API/input_files"
-output_directory = "/home/admin/AV_API/av_response_data"
-appliance_ip = "NNN.NNN.NNN.NNN"
+# Following variables can be assigned and used instead of adding them as arguments when running the av_api.py .
+#  input_directory and output_directory have the following default settings.
+#  Using the following input_directory default setting means - assuming that the input files to handle are in
+#   already existing folder :  ..appliance_tpapi/av_api/input_files
+#  Using the following output_directory default setting means - creating/using the output directory :
+#   ..appliance_tpapi/av_api/av_response_data
+input_directory = "input_files"
+output_directory = "av_response_data"
+appliance_ip = ""
 
 
 def main():
@@ -35,7 +40,8 @@ def main():
         input_directory = args.input_directory
     print("The input files directory to be scanned by AV : {}".format(input_directory))
     if not os.path.exists(input_directory):
-        print("The input files directory {} does not exist !".format(input_directory))
+        print("\n\n  --> The input files directory {} does not exist !\n\n".format(input_directory))
+        parser.print_help()
         return
     if args.output_directory:
         output_directory = args.output_directory
@@ -49,6 +55,10 @@ def main():
             return
     if args.appliance_ip:
         appliance_ip = args.appliance_ip
+    if not appliance_ip:
+        print("\n\n  --> Missing appliance_ip !\n\n")
+        parser.print_help()
+        return
     print("The appliance ip address : {}".format(appliance_ip))
     url = "https://" + appliance_ip + ":18194/tecloud/api/v1/file/"
 
@@ -57,7 +67,7 @@ def main():
     for file_name in os.listdir(input_directory):
         try:
             full_path = os.path.join(input_directory, file_name)
-            print("Sending file: {} to AV".format(file_name))
+            print("Handling file: {} by AV".format(file_name))
             av = AV(url, file_name, full_path, output_directory)
             av.handle_file()
         except Exception as E:
