@@ -116,3 +116,4 @@ class TexResults(object):
         except Exception as E:
             self.log_print("Writing TEX results failed: {} ".format(E))
             raise
+
