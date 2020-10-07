@@ -37,6 +37,12 @@ class AV(object):
         self.final_status_label = ""
         self.report_id = ""
 
+    def print(self, msg):
+        """
+        Logging purpose
+        """
+        print("file {} : {}".format(self.file_name, msg))
+
     def set_file_md5(self):
         """
         Calculates the file's md5
@@ -68,9 +74,9 @@ class AV(object):
         self.set_file_md5()
         request = copy.deepcopy(self.request_template)
         request['request'][0]['md5'] = self.md5
-        print("file {} md5: {}".format(self.file_name, self.md5))
+        self.print("md5: {}".format(self.md5))
         data = json.dumps(request)
-        print("Sending AV Query request before upload in order to check AV cache for file {}".format(self.file_name))
+        self.print("Sending AV Query request before upload in order to check AV cache")
         response = requests.post(url=self.url + "query", data=data, verify=False)
         response_j = response.json()
         return response_j
@@ -86,15 +92,14 @@ class AV(object):
             'request': data,
             'file': open(self.file_path, 'rb')
         }
-        print("Sending Upload request of av for file {}".format(self.file_name))
+        self.print("Sending Upload request of av")
         try:
             response = requests.post(url=self.url + "upload", files=curr_file, verify=False)
         except Exception as E:
-            print("Upload file failed. file: {} , failure: {}".format(self.file_name, E))
+            self.print("Upload file failed: {}".format(E))
             raise
         response_j = response.json()
-        print("av Upload response status for file {} : {}".format(self.file_name,
-                                                                  response_j["response"][0]["status"]["label"]))
+        self.print("av Upload response status : {}".format(response_j["response"][0]["status"]["label"]))
         return response_j
 
     def query_file(self):
@@ -103,7 +108,7 @@ class AV(object):
         Repeat query until receiving av results.
         :return the (last) query response with the handled file AV results
         """
-        print("Start sending Query requests of av after AV upload for file {}".format(self.file_name))
+        self.print("Start sending Query requests of av after AV upload")
         request = copy.deepcopy(self.request_template)
         request['request'][0]['md5'] = self.md5
         data = json.dumps(request)
@@ -111,17 +116,17 @@ class AV(object):
         status_label = False
         retry_no = 0
         while (not status_label) or (status_label == "NOT_FOUND"):
-            print("Sending Query request for av for file {}".format(self.file_name))
+            self.print("Sending Query request for av")
             response = requests.post(url=self.url + "query", data=data, verify=False)
             response_j = response.json()
             status_label = response_j['response'][0]['status']['label']
             if status_label != "NOT_FOUND":
                 break
-            print("av Query response status for file {} is still pending".format(self.file_name))
+            self.print("av Query response status is still pending")
             time.sleep(SECONDS_TO_WAIT)
             retry_no += 1
             if retry_no == MAX_RETRIES:
-                print("Reached query max retries.  Stop waiting for av results for file {}".format(self.file_name))
+                self.print("Reached query max retries.  Stop waiting for av results")
                 break
         return response_j
 
@@ -132,18 +137,17 @@ class AV(object):
         query_cache_response = self.check_av_cache()
         cache_status_label = query_cache_response['response'][0]['status']['label']
         if cache_status_label == "FOUND":
-            print("Results already exist in AV cache for file {}".format(self.file_name))
+            self.print("Results already exist in AV cache for")
             self.final_response = query_cache_response
             self.final_status_label = cache_status_label
         else:
-            print("No results in AV cache before upload for file {}".format(self.file_name))
+            self.print("No results in AV cache before upload")
             upload_response = self.upload_file()
             upload_status_label = upload_response["response"][0]["status"]["label"]
             if upload_status_label == "UPLOAD_SUCCESS":
                 query_response = self.query_file()
                 query_status_label = query_response["response"][0]["status"]["label"]
-                print("Receiving Query response with av results for file {}. status: {}".format(self.file_name,
-                                                                                                query_status_label))
+                self.print("Receiving Query response with av results. status: {}".format(query_status_label))
                 self.final_response = query_response
                 self.final_status_label = query_status_label
             else:
@@ -153,6 +157,6 @@ class AV(object):
         if self.final_status_label == "FOUND":
             signature = self.final_response["response"][0]["av"]["malware_info"]["signature_name"]
             if signature:
-                print("File {} was found malicious by AV.  Signature : {}".format(self.file_name, signature))
+                self.print("was found malicious by AV.  Signature : {}".format(signature))
             else:
-                print("File {} was found clean by AV".format(self.file_name))
+                self.print("was found clean by AV")
