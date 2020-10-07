@@ -12,16 +12,24 @@ import os
 import argparse
 
 
-input_directory = "/home/admin/TP_API/input_files"
-output_root_directory = "/home/admin/TP_API"
-appliance_ip = "NNN.NNN.NNN.NNN"
-api_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+# Following variables can be assigned and used instead of adding them as arguments when running the tp_api.py .
+#  input_directory and output_root_directory have the following default settings.
+#  Using the following input directory default setting means - assuming that the input files to handle are in
+#   already existing folder :  ..appliance_tpapi/tp_api/input_files
+#  Using the following output_root_directory default setting means - creating/using the output root directory :
+#   ..appliance_tpapi/tp_api/tp_api_output
+input_directory = "input_files"
+output_root_directory = "tp_api_output"
+appliance_ip = ""
+api_key = ""
+cert_file = ""
 
 
 def main():
     """
     1. Get the optional arguments (if any): the input-directory, the output-root-directory,
-        appliance-ip and the api-key.
+        the api-key, either the appliance-ip or the appliance-FQDN and the certificate file.
+        Note: if using an SSL-certificate then must also use the FQDN.
     2. Accordingly set the api-url, and create the output sub-directories.
     3. Within the output-root-directory, create a subdirectory whose name is current date and time,
          and within create all required output subdirectories for the results.
@@ -30,13 +38,15 @@ def main():
     """
     global input_directory
     global output_root_directory
-    global appliance_ip
     global api_key
+    global appliance_ip
+    global cert_file
     parser = argparse.ArgumentParser()
-    parser.add_argument("-id", "--input_directory", help="the input files folder to be scanned by AV")
+    parser.add_argument("-id", "--input_directory", help="the input files folder to be handled")
     parser.add_argument("-od", "--output-root-directory", help="the output root folder of the results")
-    parser.add_argument("-ip", "--appliance_ip", help="the appliance ip address")
+    parser.add_argument("-ip", "--appliance_ip", help="the appliance ip address (or the appliance FQDN)")
     parser.add_argument("-ak", "--api_key", help="the appliance api key")
+    parser.add_argument("-ct", "--cert_file", help="valid certificate file (full path)")
     args = parser.parse_args()
     if args.output_root_directory:
         output_root_directory = args.output_root_directory
@@ -50,19 +60,37 @@ def main():
             raise
     # Set the logger immediately after getting/creating the output root directory
     tp_log.set_log(output_root_directory)
+    tp_log.log("-----------------------------------------------------------------------------")
+    tp_log.log("-----------------------------------------------------------------------------")
     tp_log.log("The output root directory of the results : {}".format(output_root_directory))
     if args.input_directory:
         input_directory = args.input_directory
-    tp_log.log_and_print("The input files directory to be scanned by TE, TEX, AV : {}".format(input_directory))
+    tp_log.log_and_print("The input files directory to be handled : {}".format(input_directory))
     if not os.path.exists(input_directory):
-        tp_log.log_and_print("The input files directory {} does not exist !".format(input_directory))
+        print("\n\n  --> The input files directory {} does not exist !\n\n".format(input_directory))
+        parser.print_help()
+        tp_log.log("The input files directory {} does not exist !".format(input_directory))
         return
     if args.appliance_ip:
         appliance_ip = args.appliance_ip
+    if not appliance_ip:
+        print("\n\n  --> Missing appliance_ip !\n\n")
+        parser.print_help()
+        tp_log.log("Missing appliance_ip !")
+        return
     tp_log.log_and_print("The appliance ip address : {}".format(appliance_ip))
     if args.api_key:
         api_key = args.api_key
+    if not api_key:
+        print("\n\n  --> Missing appliance api key !\n\n")
+        parser.print_help()
+        tp_log.log("Missing appliance api key !")
+        return
     tp_log.log_and_print("The appliance api key : {}".format(api_key))
+    if args.cert_file:
+        cert_file = args.cert_file
+    if cert_file:
+        tp_log.log_and_print("The certificate file : {}".format(cert_file))
     url = "https://" + appliance_ip + "/UserCheck/TPAPI"
     output_directories = OutputDirectories(output_root_directory)
 
@@ -71,7 +99,7 @@ def main():
     for file_name in os.listdir(input_directory):
         try:
             file_path = os.path.join(input_directory, file_name)
-            tp = TpFileHandling(url, api_key, file_name, file_path, output_directories)
+            tp = TpFileHandling(url, api_key, file_name, file_path, output_directories, cert_file)
             tp.handle_file()
         except Exception as E:
             tp_log.log_and_print("could not handle file: {} because: {}. Continue to handle next file.".
