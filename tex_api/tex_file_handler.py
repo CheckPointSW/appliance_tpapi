@@ -5,6 +5,7 @@ import base64
 import copy
 from enum import Enum
 import urllib3
+urllib3.disable_warnings(urllib3.exceptions.SubjectAltNameWarning)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -49,7 +50,7 @@ class TEX(object):
       2. Write scrub (tex) upload results into the output folder.
            If tex managed to clean the file, then also write that cleaned file into the output folder.
     """
-    def __init__(self, url, api_key, file_name, file_path, output_folder):
+    def __init__(self, url, api_key, file_name, file_path, output_folder, cert_file):
         self.url = url
         self.api_key = api_key
         self.file_name = file_name
@@ -70,8 +71,15 @@ class TEX(object):
             }]
         }
         self.output_folder = output_folder
+        self.cert_file = cert_file
         self.clean_file_data = ""
         self.clean_file_name = ""
+
+    def print(self, msg):
+        """
+        Logging purpose
+        """
+        print("file {} : {}".format(self.file_name, msg))
 
     def create_clean_file(self):
         """
@@ -104,7 +112,7 @@ class TEX(object):
         if is_cleaned:  # no need to write the whole clean file inside the response info
             scrub_response["file_enc_data"] = "already used. removed because of space issues"
         tex_extract_result = return_relevant_enum(scrub_response["scrub_result"])
-        print("TEX extract result for file {} : {}".format(self.file_name, tex_extract_result))
+        self.print("TEX extract result : {}".format(tex_extract_result))
         with open(output_path, 'w') as file:
             file.write(json.dumps(response))
         return is_cleaned
@@ -131,11 +139,11 @@ class TEX(object):
         """
         request = self.prepare_request_for_upload()
         data = json.dumps(request)
-        print("Sending Upload request of tex for file {}".format(self.file_name))
+        self.print("Sending Upload request of tex")
         try:
-            response = requests.post(url=self.url, data=data, verify=False)
+            response = requests.post(url=self.url, data=data, verify=(self.cert_file if self.cert_file else False))
         except Exception as E:
-            print("Upload file failed. file: {} , failure: {}. will continue".format(self.file_name, E))
+            self.print("Upload file failed: {}.".format(E))
             raise
         response_j = response.json()
         return response_j
@@ -148,4 +156,4 @@ class TEX(object):
         is_cleaned = self.create_response_info(upload_response)
         if is_cleaned:
             cleaned_file_path = self.create_clean_file()
-            print("TEX managed to clean file {} .  Cleaned file : {}".format(self.file_name, cleaned_file_path))
+            self.print("TEX managed to clean the file.  Cleaned file : {}".format(cleaned_file_path))
