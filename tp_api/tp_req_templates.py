@@ -29,8 +29,7 @@ te_options_template = {
     "features": ["te", "te_eb", "av"],
     "te": {
         "reports_version_number": 2,
-        "reports": ["summary"],
-        "version_info": True
+        "reports": ["summary"]
     }
 }
 
@@ -45,8 +44,7 @@ te_av_query_request_template = {
         "features": ["te", "av"],
         "te": {
             "reports_version_number": 2,
-            "reports": ["summary"],
-            "version_info": True
+            "reports": ["summary"]
         }
     }]
 }
