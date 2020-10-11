@@ -30,8 +30,7 @@ te_options_template = {
     "te": {
         "reports_version_number": 2,
         "reports": ["summary"],
-        "version_info": True,
-        "return_errors": True
+        "version_info": True
     }
 }
 
@@ -47,8 +46,7 @@ te_av_query_request_template = {
         "te": {
             "reports_version_number": 2,
             "reports": ["summary"],
-            "version_info": True,
-            "return_errors": True
+            "version_info": True
         }
     }]
 }
