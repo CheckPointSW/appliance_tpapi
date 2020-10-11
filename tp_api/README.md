@@ -23,7 +23,7 @@ For each file:
         
            2.1 If found in AV cache, then writing the av results to av_response_info/ sub-directory.
 
-           2.2 Uploading the file to the appliance for handling by all features:  te, te_eb, scrub (tex) and av
+           2.2 Uploading the file to the appliance for handling by all features:  te, te_eb, scrub (tex) and av (if not already found in AV cache)
 
            2.3 If te result is upload_success :
 
