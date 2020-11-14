@@ -46,7 +46,7 @@ class TEX(object):
     """
     This class gets a file as input and handles it as follows (function handle_file) :
       1. Upload the file to the appliance for handling by scrub (tex) feature.
-           Using as default:  scrub-method=clean and a predefined least of scrubbed-parts-codes.
+           Using as default:  scrub-method=clean and a predefined list of scrubbed-parts-codes.
       2. Write scrub (tex) upload results into the output folder.
            If tex managed to clean the file, then also write that cleaned file into the output folder.
     """
