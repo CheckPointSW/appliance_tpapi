@@ -12,7 +12,7 @@ For each file:
 
       1. Uploading the file to the appliance for handling by scrub (tex) feature.
 
-           Using as default:  scrub-method=clean and a predefined least of scrubbed-parts-codes.
+           Using as default:  scrub-method=clean and a predefined list of scrubbed-parts-codes.
     
       2. Writing scrub (tex) upload results into the output directory.
     
