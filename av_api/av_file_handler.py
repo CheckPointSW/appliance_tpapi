@@ -115,12 +115,12 @@ class AV(object):
         response_j = json.loads('{}')
         status_label = False
         retry_no = 0
-        while (not status_label) or (status_label == "NOT_FOUND"):
+        while (not status_label) or (status_label == "PENDING"):
             self.print("Sending Query request for av")
             response = requests.post(url=self.url + "query", data=data, verify=False)
             response_j = response.json()
             status_label = response_j['response'][0]['status']['label']
-            if status_label != "NOT_FOUND":
+            if status_label != "PENDING":
                 break
             self.print("av Query response status is still pending")
             time.sleep(SECONDS_TO_WAIT)
