@@ -1,5 +1,5 @@
 # av_api
-A Python client side utility for using Anti Virus API calls to an appliance. 
+A Python client side utility for using Anti Virus API calls to an appliance.
 
 It includes Upload and Query API calls, using the Cloud API format ( …/tecloud/api/v#/file/..).
 
