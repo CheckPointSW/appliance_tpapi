@@ -28,7 +28,6 @@ te_options_template = {
     "is_base64": True,
     "features": ["te", "te_eb", "av"],
     "te": {
-        "reports_version_number": 2,
         "reports": ["summary"]
     }
 }
@@ -43,7 +42,6 @@ te_av_query_request_template = {
         "sha1": "",
         "features": ["te", "av"],
         "te": {
-            "reports_version_number": 2,
             "reports": ["summary"]
         }
     }]
