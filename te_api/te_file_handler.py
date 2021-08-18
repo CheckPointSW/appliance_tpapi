@@ -34,7 +34,6 @@ class TE(object):
             "request": [{
                 "features": ["te", "te_eb"],
                 "te": {
-                    "reports_version_number": 2,
                     "reports": ["summary"],
                     "version_info": True,
                     "return_errors": True
